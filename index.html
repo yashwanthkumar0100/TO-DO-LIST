@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(100deg, #1de9b6, #ff6f91);
+    padding: 60px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.shape {
+    background: #fff;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 20px;
+    padding: 35px 40px 45px 40px;
+    box-shadow: 0 20px 40px rgba(29, 233, 182, 0.3);
+    text-align: center;
+    transition: box-shadow 0.3s ease;
+}
+
+.shape:hover {
+    box-shadow: 0 30px 60px rgba(255, 111, 145, 0.5);
+}
+
+
+h1 {
+    font-weight: 800;
+    font-size: 2.8rem;
+    color: #ff6f91;
+    letter-spacing: 4px;
+    margin-bottom: 35px;
+    user-select: none;
+}
+
+
+.todo-input {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    justify-content: center;
+}
+
+/* Input field */
+#todoinput {
+    flex-grow: 1;
+    padding: 14px 20px;
+    font-size: 18px;
+    border: 3px solid #1de9b6;
+    border-radius: 12px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: inset 0 2px 5px rgba(29, 233, 182, 0.15);
+}
+
+#todoinput::placeholder {
+    color: #ffb3c1;
+    font-weight: 500;
+}
+
+#todoinput:focus {
+    border-color: #ff6f91;
+    box-shadow: 0 0 8px #ff6f91;
+}
+
+/* Submit button */
+button {
+    background-color: #ff6f91;
+    border: none;
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+    padding: 14px 28px;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(255, 111, 145, 0.6);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #1de9b6;
+    box-shadow: 0 8px 22px rgba(29, 233, 182, 0.8);
+    transform: translateY(-2px);
+}
+
+/* List styles */
+#list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* List items */
+li {
+    background: #fef6f9;
+    padding: 16px 20px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    box-shadow: 0 8px 18px rgba(255, 111, 145, 0.15);
+   
+}
+
+li:hover {
+    background-color: #ffe6ec;
+}
+
+/* Checkbox */
+li input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    accent-color: #1de9b6;
+    flex-shrink: 0;
+}
+
+/* Task title */
+li span {
+    flex-grow: 1;
+    font-size: 18px;
+    font-weight: 600;
+    color: #34495e;
+    user-select: none;
+}
+
+li span.text-decoration-line-through {
+    color: #ff9fb8;
+    text-decoration: line-through;
+    font-style: italic;
+}
+
+/* Edit/Delete buttons */
+li button {
+    background-color: transparent;
+    border: 2px solid #ff6f91;
+    color: #ff6f91;
+    padding: 6px 14px;
+    font-size: 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+li button:hover {
+    background-color: #ff6f91;
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    .shape {
+        padding: 25px 20px 30px 20px;
+    }
+
+    h1 {
+        font-size: 2rem;
+        letter-spacing: 2px;
+    }
+
+    #todoinput {
+        font-size: 16px;
+        padding: 12px 15px;
+    }
+
+    button {
+        font-size: 16px;
+        padding: 12px 20px;
+    }
+
+    li span {
+        font-size: 16px;
+    }
+}
+
+</style>
+
+<body>
+    <div class="shape">
+        <h1>TO DO LIST</h1>
+        <div class="todo-input"> 
+            <input type="text" id="todoinput" placeholder="ADD UR NEW TASKS HERE ">
+<button onclick="addTask()">SUBMIT</button>
+        </div>
+        <ul id="list">
+
+        </ul>
+    </div>
+    
+    <script>
+        console.log("js is start")
+let Todo =JSON.parse(localStorage.getItem('todo')) || [];
+    
+
+
+        let todoInput = document.getElementById("todoinput")
+        console.log(todoInput,'todoInpuut')
+let ulTag = document.getElementById("list")
+
+
+function showTodo() {
+ulTag.innerHTML = '' // Clear the list before showing new items
+    
+
+    Todo.forEach((ele,index) => {
+
+     let li = document.createElement('li') 
+     console.log(ele, li, index)
+
+     li.innerHTML = `
+
+    <input type="checkbox"  ${ele.completed ? "checked" : ""} onChange="handleInputChage(${index})">
+
+    <span class = '${ele.completed ? 'text-decoration-line-through' : ''}'>${ele.title}</span>
+
+    <button onClick="handleEdit(${index})" >Edit</button>
+
+    <button onClick="handleDelete(${index})" >Delete</button>
+
+`
+ulTag.appendChild(li)
+
+
+    });
+    
+
+}
+showTodo()
+
+
+function addTask() {
+    let todoInput = document.getElementById("todoinput")
+    console.log(todoInput.value)
+
+   if (todoInput.value.trim() === '') {
+        alert("Enter Ur Task")
+        return;
+ 
+    }
+
+    Todo.push({
+        title: todoInput.value,
+        completed: false
+    })
+    console.log(Todo, 'Todo')
+
+
+ulTag.innerHTML = ''
+
+    showTodo()
+    
+    todoInput.value = '';
+   addToLocalStorage() 
+
+
+
+}
+
+
+function addToLocalStorage() {
+    localStorage.setItem('todo', JSON.stringify(Todo))
+
+
+    
+}
+
+
+function handleDelete(pos) {
+  console.log(pos,"dele fun")
+  Todo.splice(pos, 1); 
+console.log(Todo, 'todo delete')
+  showTodo()
+addToLocalStorage()
+
+
+}
+
+
+
+function handleEdit(pos) {
+    console.log(pos, "edit the todo")
+    let updateTodo = prompt("Enter the Upadate Your Work")
+    console.log(updateTodo, "update todo")
+    if(updateTodo.trim()!== ''){
+    Todo[pos].title = updateTodo;
+    showTodo()
+    addToLocalStorage()
+    }
+}
+
+
+
+function handleInputChage(pos){
+    console.log(Todo[pos],'inputchange')
+    Todo[pos].completed = !Todo[pos].completed; // toggle the all status
+    showTodo()
+    addToLocalStorage()
+
+
+}
+    </script>
+    
+</body>
+</html> 
